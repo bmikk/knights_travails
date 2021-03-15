@@ -30,11 +30,11 @@ end
 
 class Board
 
-  attr_reader :grid
+  attr_reader :grid, :knight_moves
 
   def initialize
     @grid = create_grid
-    @knight_moves = find_knight_moves(@grid[0][0])
+    @knight_moves = [] #find_knight_moves(@grid[0][0])
   end
 
   def create_grid
@@ -88,7 +88,9 @@ class Board
     possible_moves << [(y - 1), (x - 2)]
     possible_moves << [(y - 1), (x + 2)]
 
-    puts "possible_moves is #{possible_moves}"
+    puts "possible_moves are #{possible_moves}"
+
+    #AS FAR AS I CAN TELL, THE ISSUE IS THAT WE DON'T HAVE A SUFFICIENT BASE CASE FOR ENDING THE RECURSION. LIKELY NEED SOME SORT OF WAY TO TRACK WHICH NODES ARE FULLY COMPLETED.
 
     possible_moves.each do |move| 
       if (move[0] < 0 || move[1] < 0) || (move[0] > 7 || move[1] > 7) #|| @grid[move[0]][move[1]].data == 1
@@ -106,7 +108,7 @@ class Board
       find_knight_moves(@grid[move[0]][move[1]])
     end
 
------------------------- PAUSED HERE! FIX THIS METHOD! GENERATES AN INFINITE LOOP ----------------------
+
 
     root.data = 1
 
@@ -153,4 +155,6 @@ game_board = Board.new
 
 
 game_board.display_board
+
+game_board.knight_moves = game_board.find_knight_moves(game_board.grid[0][0])
 
