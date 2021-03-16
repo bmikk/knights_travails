@@ -34,7 +34,7 @@ class Board
 
   def initialize
     @grid = create_grid
-    @knight_moves = [] #find_knight_moves(@grid[0][0])
+    @knight_moves = find_knight_moves(@grid[0][0])
   end
 
   def create_grid
@@ -65,20 +65,24 @@ class Board
     end
   end
 
-  public
-
+  #This is the method that has the juice. Takes a root node and recursively finds all the other nodes around it that would 
+  #count as a legal move. 
   def find_knight_moves(root)
     
+    #base case is if the root doesn't exist or if it's already been covered.
     return root if root == nil
     return root if root.data == 1
 
+    #create local variables for the position's coordinates.
     y, x = root.position[0], root.position[1]
     puts "y is #{y}"
     puts "x is #{x}"
 
+    #create local variables to store working array values
     possible_moves = []
     valid_moves = []
 
+    #finds all possible moves that a knight would have from the root node
     possible_moves << [(y + 2), (x - 1)]
     possible_moves << [(y + 2), (x + 1)]
     possible_moves << [(y - 2), (x - 1)]
@@ -90,10 +94,9 @@ class Board
 
     puts "possible_moves are #{possible_moves}"
 
-    #AS FAR AS I CAN TELL, THE ISSUE IS THAT WE DON'T HAVE A SUFFICIENT BASE CASE FOR ENDING THE RECURSION. LIKELY NEED SOME SORT OF WAY TO TRACK WHICH NODES ARE FULLY COMPLETED.
-
+    #determines if each possible node is a valid move, and saves it if it is
     possible_moves.each do |move| 
-      if (move[0] < 0 || move[1] < 0) || (move[0] > 7 || move[1] > 7) #|| @grid[move[0]][move[1]].data == 1
+      if (move[0] < 0 || move[1] < 0) || (move[0] > 7 || move[1] > 7)
         next
       else
         valid_moves << move
@@ -102,15 +105,15 @@ class Board
 
     puts "valid_moves is #{valid_moves}"
 
+    #now that we've found all the valid moves for a node, marks the data flag showing we've covered the root node
+    root.data = 1
+
+    #Next, recursively finds the valid moves of each of the root node's valid children.
     valid_moves.each do |move|
       puts "Found one! Adding #{move} to legal moves of #{root.position}"
       root.moves << move
       find_knight_moves(@grid[move[0]][move[1]])
     end
-
-
-
-    root.data = 1
 
     return root
   end
@@ -156,5 +159,5 @@ game_board = Board.new
 
 game_board.display_board
 
-game_board.knight_moves = game_board.find_knight_moves(game_board.grid[0][0])
+
 
